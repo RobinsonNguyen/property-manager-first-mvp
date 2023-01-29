@@ -1,0 +1,62 @@
+/* https://color.adobe.com/create/color-wheel
+Compound
+A #8A332C Dark Red
+B #BD9D9B Light gray pink
+C #562449 purple
+D #536343 easy darker green
+E #7D8A2C neon tree green
+
+TEXT
+B and D and E 423120 dark brown
+A and C #FFC48D yellowgold
+ */
+ @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500&display=swap');
+
+.top {
+    font-family: Cinezel;
+    display: flex;
+    background-color: #562449;
+    color: #FFC48D;
+    font-size: 18px;
+}
+
+.company-info{
+    width: 50vw;
+    
+    border: 2px solid black;
+}
+.property-manager{
+    width: 50vw;
+    border: 2px solid black;
+    text-align: right;
+}
+
+.navbar {
+    display: flex;
+    background-color: #562449;
+    color: #FFC48D;
+    /* font-family: Cinzel; */
+    font-size: 18px;
+}
+a:hover {
+    color:aqua;
+}
+ul{
+    display: flex;
+    list-style: none;
+}
+a {
+    padding: 0 10px;
+    color: #FFC48D;
+    /* font-weight: 300; */
+    /* text-align: center; */
+    /* box-sizing: border-box; */
+    line-height: 34px;
+    letter-spacing: 0.8px;
+    text-decoration: none;
+    /* width: auto;
+    display: block;
+    box-sizing: border-box;
+    height: auto;
+    vertical-align: middle; */
+}
