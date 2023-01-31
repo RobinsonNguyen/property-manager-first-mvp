@@ -11,18 +11,34 @@ B and D and E 423120 dark brown
 A and C #FFC48D yellowgold
  */
 @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@500&display=swap");
-body {
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: Cinezel;
 }
-
+html,
+body {
+  min-height: 100%;
+  /* height: 100vh;
+  position: relative; */
+}
+body {
+  /* background-color: #bd9d9b; */
+  /* position: relative; */
+  background: linear-gradient(180deg, #ffeeee 40%, #bd9d9b);
+  /* height: 100%; */
+  color: #423120;
+  font-size: 18px;
+}
+.content {
+  display: flex;
+  /* grid-template-columns: 1fr 1fr; */
+}
 #logo {
   height: 100%;
 }
-#photo {
-  height: 100%;
-}
+
 .top {
   font-family: Cinezel;
   display: flex;
@@ -107,10 +123,7 @@ form {
   width: 50%;
   /* border: 1px solid red; */
 }
-.content {
-  display: flex;
-  /* grid-template-columns: 1fr 1fr; */
-}
+
 #price-range-form {
   display: flex;
   justify-content: center;
@@ -129,11 +142,22 @@ button:hover {
   height: 30px;
   margin: 0 0.3em;
 } */
-
+/* -------------------About Me Page--------------*/
+#about-me {
+  width: 50%;
+  margin: 1em auto;
+  font-size: 22px;
+}
+#photo {
+  float: left;
+  width: 200px;
+  margin: 0 1em;
+}
 /* --------------------Property Page---------------*/
 .property-panel {
   display: flex;
   margin: 2em 3em;
+  font-weight: 600;
 }
 #property-panel-filter > * {
   height: 30px;
@@ -189,4 +213,12 @@ i {
   width: 50px;
   margin: 0em 1em;
   /* height: 200px; */
+}
+#property-manager-page div:first-child {
+  /* border: 1px solid black; */
+  display: flex;
+}
+#prof-photo {
+  border-radius: 50%;
+  width: 175px;
 }

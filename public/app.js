@@ -2,14 +2,21 @@ let contentBody = document.querySelector(".content");
 function aboutMe() {
   // contentBody.replaceChildren();
   const div = document.createElement("div");
-  div.className = "aboutMePage";
-  div.innerHTML = `Hi, my name is Emma Bowyer. I just got started in Real Estate in 2022 and I am excited for the long journey ahead! Although I am a licensed Real Estate Agent and REALTOR®, I am focusing on everything property management including listing rentals and helping people find the right home for them to rent.
-  I believe that communication and transparency are key, and using current software and social media will help everyone know that I'm doing my best to help you achieve financial freedom through owning real estate.
-  <br>
-  Rockfordian since 2000 (lifelong)
-  prior career: radar technician in the marine corps
-  IL Real Estate License since 2022`;
+  div.id = "about-me";
+
+  const aboutMeImg = document.createElement("img");
+  aboutMeImg.src = `images/IMG_8167[2753].JPG`;
+  aboutMeImg.id = "photo";
+  div.append(aboutMeImg);
+
+  const innerDiv = document.createElement("div");
+  innerDiv.innerHTML = `Hi, my name is Emma Bowyer. I just got started in Real Estate in 2022 and I am excited for the long journey ahead! Although I am a licensed Real Estate Agent and REALTOR®, I am focusing on everything property management including listing rentals and helping people find the right home for them to rent.
+  I believe that communication and transparency are key, and using current software and social media will help everyone know that I'm doing my best to help you achieve financial freedom through owning real estate. <br> <br><br>
+  <i class="fa-solid fa-baby"></i>Rockfordian since 2000 (lifelong) <br>
+  <i class="fa-solid fa-wrench"></i>Prior Career: Radar Technician in the Marine Corps <br>
+  <i class="fa-solid fa-id-card-clip"></i>Illinois Real Estate License since 2022`;
   // div.classList.add("hide");
+  div.append(innerDiv);
   contentBody.append(div);
 }
 async function makePropertiesPage() {
@@ -60,17 +67,19 @@ function makePropertyPanel(obj) {
   const deleteBtn = document.createElement("button");
   deleteBtn.textContent = "Delete this property";
   deleteBtn.addEventListener("click", async function (e) {
-    console.log(this.parentElement.dataset.id);
+    // console.log(this.previousElementSibling.dataset.id);
     const response = await fetch("/properties", {
       method: "DELETE",
-      body: JSON.stringify({ property_id: this.parentElement.dataset.id }),
+      body: JSON.stringify({
+        property_id: this.previousElementSibling.dataset.id,
+      }),
       headers: {
         "Content-Type": "application/json",
       },
     });
     const queryData = await response.json();
     //Need to feed back deletion of panel
-    console.log(queryData);
+    // console.log(queryData);
     this.parentElement.remove();
   });
   innerDiv.append(deleteBtn);
@@ -85,13 +94,19 @@ async function makeContactPage() {
   div.id = "property-manager-page";
 
   const contactDiv = document.createElement("div");
+  const innerDiv = document.createElement("div");
+  const profImg = document.createElement("img");
+  profImg.src = `images/prof-photo.JPG`;
+  profImg.id = "prof-photo";
+  contactDiv.append(profImg);
+
   const { first_name, last_name, phone_number, email, company } = data[0];
   const address = "551 N Mulford Rd, Rockford, IL, United States, Illinois";
-  contactDiv.innerHTML = `<h3>${first_name} ${last_name} </h3><br> 
+  innerDiv.innerHTML = `<h3>${first_name} ${last_name} </h3><br> 
   <i class="fa-solid fa-location-dot"></i> ${address}<br> 
   <i class="fa-solid fa-phone"></i>  ${phone_number}<br> 
   <i class="fa-solid fa-envelope"></i>  ${email} <br>`;
-  div.append(contactDiv);
+  contactDiv.append(innerDiv);
 
   const brandDiv = document.createElement("div");
   brandDiv.id = "brand-links";
@@ -121,6 +136,7 @@ async function makeContactPage() {
   bhhsDiv.target = "_blank";
   brandDiv.append(bhhsDiv);
 
+  div.append(contactDiv);
   div.append(brandDiv);
   div.classList.add("hide");
   contentBody.append(div);
@@ -155,7 +171,7 @@ aboutMebutton.addEventListener("click", clickAbout, false);
 function clickAbout(e) {
   e.preventDefault();
   hideContent();
-  const temp = document.getElementsByClassName("aboutMePage")[0];
+  const temp = document.getElementById("about-me");
   temp.classList.remove("hide");
   // aboutMe();
 }
@@ -172,7 +188,6 @@ function hideContent() {
 function hidePropertiesUnder(price) {
   if (price === "") price = 9999999;
   const temp = document.getElementById("propertyPage");
-  console.log(temp.children);
   for (let elem of temp.children) {
     if (parseInt(elem.dataset.price) > price) {
       elem.classList.add("hide");
@@ -307,7 +322,7 @@ function addPropertyForm() {
   const nameInput = document.createElement("input");
   nameInput.type = "text";
   nameInput.required = true;
-  // formElement.append(firstCol);
+  nameInput.placeholder = "Required";
 
   // const secondCol = document.createElement("div");
   const descriptionLabel = document.createElement("label");
@@ -316,36 +331,42 @@ function addPropertyForm() {
   descriptionInput.rows = "5";
   descriptionInput.cols = "33";
   descriptionInput.required = true;
+  descriptionInput.placeholder = "Required";
 
   const priceLabel = document.createElement("label");
-  priceLabel.textContent = "priceLabel";
+  priceLabel.textContent = "Price";
   const priceInput = document.createElement("input");
   priceInput.type = "number";
   priceInput.required = true;
+  priceInput.placeholder = "Required";
 
   const streetLabel = document.createElement("label");
-  streetLabel.textContent = "streetLabel";
+  streetLabel.textContent = "Street";
   const streetInput = document.createElement("input");
   streetInput.type = "text";
   streetInput.required = true;
+  streetInput.placeholder = "Required";
 
   const cityLabel = document.createElement("label");
-  cityLabel.textContent = "cityLabel";
+  cityLabel.textContent = "City";
   const cityInput = document.createElement("input");
   cityInput.type = "text";
   cityInput.required = true;
+  cityInput.placeholder = "Required";
 
   const stateLabel = document.createElement("label");
-  stateLabel.textContent = "stateLabel";
+  stateLabel.textContent = "State";
   const stateInput = document.createElement("input");
   stateInput.type = "text";
   stateInput.required = true;
+  stateInput.placeholder = "Required";
 
   const zipLabel = document.createElement("label");
-  zipLabel.textContent = "zipLabel";
+  zipLabel.textContent = "Zip Code";
   const zipInput = document.createElement("input");
   zipInput.type = "number";
   zipInput.required = true;
+  zipInput.placeholder = "Yeah this one too";
 
   const submitBtn = document.createElement("button");
   submitBtn.type = "submit";
@@ -403,8 +424,6 @@ aboutMe();
 makePropertiesPage();
 makeContactPage();
 
-const test = document.createElement("i");
-console.log(test);
 //https://www.bhhscrosby.com/agent-bio/emmabowyer
 //https://www.facebook.com/BowyerPropertyManager
 
