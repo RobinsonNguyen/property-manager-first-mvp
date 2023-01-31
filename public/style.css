@@ -72,11 +72,11 @@ body {
 /* a:hover {
     color: aqua;
 } */
-a:hover {
+.nav-list a:hover {
   /* transform: translateY(-20em) scale(1.02); */
   color: white;
 }
-a {
+.nav-list a {
   /* background-color: red; */
   display: inline-block;
   position: relative;
@@ -88,9 +88,6 @@ a {
   /* transform: transform 1s ease; */
 }
 
-.property-panel {
-  margin: 2em 3em;
-}
 /* #login-info div {
   padding: 0.3em 0;
 } */
@@ -114,16 +111,82 @@ form {
   display: flex;
   /* grid-template-columns: 1fr 1fr; */
 }
+#price-range-form {
+  display: flex;
+  justify-content: center;
+  margin: 1em;
+  font-size: 1.5em;
+}
+button {
+  background-color: #8a332c;
+  color: #ffc48d;
+}
+button:hover {
+  color: white;
+}
+
+/* #property-panel-filter button {
+  height: 30px;
+  margin: 0 0.3em;
+} */
+
+/* --------------------Property Page---------------*/
+.property-panel {
+  display: flex;
+  margin: 2em 3em;
+}
+#property-panel-filter > * {
+  height: 30px;
+  margin: 0 0.3em;
+}
 #propertyForm {
   width: 25%;
-  border: 2px solid black;
+  border: 1px solid black;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  margin: 1em;
+  padding-top: 1em;
+  padding-right: 1em;
 }
 #propertyForm > * {
   padding: 2em;
 }
-
+#cover-photo {
+  width: 200px;
+}
+.property-panel div {
+  padding: 0 1em;
+}
 .hide {
   display: none !important;
+}
+/* --------------Contact Me Page --------------*/
+#property-manager-page {
+  margin: 1em auto;
+  font-size: 1.5em;
+}
+#property-manager-page h3 {
+  margin: 0;
+}
+#brand-links {
+  display: flex;
+  /* width: 25%; */
+  justify-content: center;
+  margin: 0.5em 0;
+}
+#brand-links a {
+  text-decoration: none;
+}
+/* Font Awesome Icons */
+i {
+  margin: 0 0.5em;
+}
+/* #brand-links i {
+  width: 200px;
+  height: 500px;
+} */
+#brand-links a img {
+  width: 50px;
+  margin: 0em 1em;
+  /* height: 200px; */
 }

@@ -43,12 +43,20 @@ function makePropertyPanel(obj) {
     state,
     zip,
     price,
+    img_path,
+    img_ext,
     first_name,
     last_name,
   } = obj;
-  innerDiv.innerHTML = `${name} $${price}<br> ${description}<br> ${street}, ${city}, ${state}, ${zip} <br> The property manager is ${first_name} ${last_name}`;
-  innerDiv.setAttribute("data-price", `${price}`);
-  innerDiv.setAttribute("data-id", `${property_id}`);
+  const firstImage = document.createElement("img");
+  firstImage.src = `${img_path}1.${img_ext}`;
+  firstImage.id = "cover-photo";
+  innerDiv.append(firstImage);
+  const innerInnerDiv = document.createElement("div");
+  innerInnerDiv.innerHTML = `${name} $${price}<br> ${description}<br> ${street}, ${city}, ${state}, ${zip}`;
+  innerInnerDiv.setAttribute("data-price", `${price}`);
+  innerInnerDiv.setAttribute("data-id", `${property_id}`);
+  innerDiv.append(innerInnerDiv);
   const deleteBtn = document.createElement("button");
   deleteBtn.textContent = "Delete this property";
   deleteBtn.addEventListener("click", async function (e) {
@@ -73,14 +81,49 @@ async function makeContactPage() {
   // contentBody.replaceChildren();
   const response = await fetch("/property-manager");
   const data = await response.json();
-  for (let elem of data) {
-    const div = document.createElement("div");
-    div.className = "propertyManagerPage";
-    const { first_name, last_name, phone_number, email, company } = elem;
-    div.innerHTML = `<br>${first_name} ${last_name} <br> ${company}<br> ${phone_number}<br> ${email} <br>`;
-    div.classList.add("hide");
-    contentBody.append(div);
-  }
+  const div = document.createElement("div");
+  div.id = "property-manager-page";
+
+  const contactDiv = document.createElement("div");
+  const { first_name, last_name, phone_number, email, company } = data[0];
+  const address = "551 N Mulford Rd, Rockford, IL, United States, Illinois";
+  contactDiv.innerHTML = `<h3>${first_name} ${last_name} </h3><br> 
+  <i class="fa-solid fa-location-dot"></i> ${address}<br> 
+  <i class="fa-solid fa-phone"></i>  ${phone_number}<br> 
+  <i class="fa-solid fa-envelope"></i>  ${email} <br>`;
+  div.append(contactDiv);
+
+  const brandDiv = document.createElement("div");
+  brandDiv.id = "brand-links";
+  const linkedInDiv = document.createElement("a");
+  linkedInDiv.innerHTML = `<i class="fa-brands fa-linkedin fa-2x"></i>`;
+  linkedInDiv.href =
+    "https://www.linkedin.com/in/emmabowyer/?fbclid=IwAR2mCREta7QRIX4Oy2PkyPPP3HZGtVcVYd7H84qCr3cOCVA2l9ztgJQJJ7k";
+  linkedInDiv.target = "_blank";
+  brandDiv.append(linkedInDiv);
+
+  const facebookDiv = document.createElement("a");
+  facebookDiv.href = "https://www.facebook.com/BowyerPropertyManager";
+  facebookDiv.innerHTML = `<i class="fa-brands fa-facebook fa-2x"></i>`;
+  facebookDiv.target = "_blank";
+  brandDiv.append(facebookDiv);
+
+  const realtorDiv = document.createElement("a");
+  realtorDiv.innerHTML = `<img src='images/icons/realtoricon.jpg' />`;
+  realtorDiv.href =
+    "https://www.realtor.com/realestateagents/Emma-Bowyer_Rockford_IL_99959372";
+  realtorDiv.target = "_blank";
+  brandDiv.append(realtorDiv);
+
+  const bhhsDiv = document.createElement("a");
+  bhhsDiv.innerHTML = `<img src='images/icons/bhhs.jpg' />`;
+  bhhsDiv.href = "https://www.bhhscrosby.com/agent-bio/emmabowyer";
+  bhhsDiv.target = "_blank";
+  brandDiv.append(bhhsDiv);
+
+  div.append(brandDiv);
+  div.classList.add("hide");
+  contentBody.append(div);
 }
 const properties = document.querySelector(".button3");
 properties.addEventListener("click", clickProperties, false);
@@ -89,7 +132,7 @@ contact.addEventListener("click", clickContact, false);
 function clickContact(e) {
   e.preventDefault();
   hideContent();
-  const temp = document.getElementsByClassName("propertyManagerPage")[0];
+  const temp = document.getElementById("property-manager-page");
   temp.classList.remove("hide");
   // makeContactPage();
 }
@@ -100,7 +143,7 @@ function clickProperties(e) {
   // const newPPage = makePropertiesPage();
 
   // temp.replaceWith(makePropertiesPage());
-  const temp2 = document.getElementById("priceRange");
+  const temp2 = document.getElementById("price-range-form");
   const temp3 = document.getElementById("propertyForm");
   temp.classList.remove("hide");
   temp2.classList.remove("hide");
@@ -140,15 +183,15 @@ function hidePropertiesUnder(price) {
 }
 function addInputs() {
   const formElement = document.createElement("form");
-  formElement.id = "priceRange";
+  formElement.id = "price-range-form";
   const div = document.createElement("div");
-  div.className = "inputShit";
+  div.id = "property-panel-filter";
   const inputElement = document.createElement("input");
   inputElement.className = "input";
   inputElement.type = "number";
   const labelElement = document.createElement("label");
   labelElement.for = "input";
-  labelElement.textContent = "put in price range";
+  labelElement.textContent = "Enter a price";
   const priceBtn = document.createElement("button");
   priceBtn.type = "submit";
   priceBtn.textContent = "Filter";
@@ -301,7 +344,7 @@ function addPropertyForm() {
   const zipLabel = document.createElement("label");
   zipLabel.textContent = "zipLabel";
   const zipInput = document.createElement("input");
-  zipInput.type = "text";
+  zipInput.type = "number";
   zipInput.required = true;
 
   const submitBtn = document.createElement("button");
@@ -337,6 +380,8 @@ addProperty.addEventListener("submit", async function (e) {
     price: e.target[2].value,
     street: e.target[3].value,
     city: e.target[4].value,
+    state: e.target[5].value,
+    zip: e.target[6].value,
   };
   const response = await fetch("/properties", {
     method: "POST",
@@ -357,6 +402,9 @@ addProperty.addEventListener("reset", async function (e) {
 aboutMe();
 makePropertiesPage();
 makeContactPage();
+
+const test = document.createElement("i");
+console.log(test);
 //https://www.bhhscrosby.com/agent-bio/emmabowyer
 //https://www.facebook.com/BowyerPropertyManager
 

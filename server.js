@@ -24,13 +24,15 @@ app.get("/property-manager", async (req, res) => {
 });
 app.post("/property-manager", async (req, res) => {
   const response = await sql`SELECT * FROM property_managers`;
+  // const hashedPassword = await bcrypt.hash(req.body.password,10);
   res.send(response);
 });
 
 app.post("/properties", async (req, res) => {
-  const { name, description, price, street, city } = req.body;
-  await sql`INSERT INTO properties(name, description, price, street, city, manager_id)
-  VALUES(${name},${description},${price},${street},${city}, 1)`;
+  const { name, description, price, street, city, state, zip } = req.body;
+  // const response =
+  await sql`INSERT INTO properties(name, description, price, street, city, state, zip, manager_id)
+  VALUES(${name},${description},${price},${street},${city}, ${state}, ${zip}, 1) RETURNING *`;
   const response =
     await sql`SELECT * FROM properties INNER JOIN property_managers ON properties.manager_id = property_managers.manager_id WHERE properties.property_id = (SELECT MAX(property_id) FROM properties)`;
   res.send(response);
