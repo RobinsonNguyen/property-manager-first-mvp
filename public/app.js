@@ -96,7 +96,7 @@ async function makeContactPage() {
   const contactDiv = document.createElement("div");
   const innerDiv = document.createElement("div");
   const profImg = document.createElement("img");
-  profImg.src = `images/prof-photo.JPG`;
+  profImg.src = `images/prof-photo.jpg`;
   profImg.id = "prof-photo";
   contactDiv.append(profImg);
 

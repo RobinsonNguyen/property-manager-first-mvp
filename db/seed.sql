@@ -12,6 +12,8 @@ CREATE TABLE property_managers(
     phone_number VARCHAR(15),
     email VARCHAR(30),
     company VARCHAR(100),
+    username VARCHAR(20),
+    password VARCHAR(20),
     PRIMARY KEY(manager_id)
 );
 
