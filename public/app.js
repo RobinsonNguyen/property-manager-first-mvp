@@ -232,18 +232,22 @@ function addInputs() {
   div.append(togglePropertiesForm);
   return formElement;
 }
+function togglePropertyForm() {
+  const addProperty = document.getElementById("propertyForm");
+  const toggleForm = document.getElementById("toggle-form");
+  if (!addProperty.classList.toggle("hide")) {
+    toggleForm.textContent = "Hide New Property Form";
+  } else {
+    toggleForm.textContent = "Show New Property Form";
+  }
+}
 function revealAddPropertyForm() {
   const toggleForm = document.createElement("button");
+  toggleForm.id = "toggle-form";
   toggleForm.classList.add("admin-button");
   toggleForm.classList.add("hide");
   toggleForm.textContent = "Add New Property";
-  toggleForm.addEventListener("click", function (e) {
-    const addProperty = document.getElementById("propertyForm");
-    if (!addProperty.classList.toggle("hide")) {
-      toggleForm.textContent = "Hide New Property Form";
-    } else {
-    }
-  });
+  toggleForm.addEventListener("click", togglePropertyForm);
   return toggleForm;
 }
 function addLogin() {
@@ -464,6 +468,7 @@ function toggleAdminButtons() {
   for (let elem of deleteButtons) {
     elem.classList.toggle("hide");
   }
+  revealAddPropertyForm();
 }
 aboutMe();
 makePropertiesPage();
