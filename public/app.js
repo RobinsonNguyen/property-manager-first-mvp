@@ -453,6 +453,9 @@ addProperty.addEventListener("submit", async function (e) {
   const queryData = await response.json();
   if (queryData !== false) {
     const newestPropertyPanel = makePropertyPanel(queryData[0]);
+    newestPropertyPanel
+      .getElementsByTagName("button")[0]
+      .classList.remove("hide");
     const propertyPage = document.getElementById("propertyPage");
     propertyPage.append(newestPropertyPanel);
     this.reset();
