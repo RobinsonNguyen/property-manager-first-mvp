@@ -207,3 +207,11 @@ i {
   border-radius: 50%;
   width: 175px;
 }
+
+#login-welcome div button {
+  white-space: nowrap;
+  min-width: min-content;
+}
+#login-welcome {
+  width: 200px;
+}

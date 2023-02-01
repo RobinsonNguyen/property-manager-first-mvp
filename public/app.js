@@ -69,6 +69,8 @@ function makePropertyPanel(obj) {
   const deleteBtn = document.createElement("button");
   deleteBtn.textContent = "Delete this property";
   deleteBtn.classList.add("delete-button");
+  deleteBtn.classList.add("admin-button");
+  deleteBtn.classList.add("hide");
   deleteBtn.addEventListener("click", async function (e) {
     // console.log(this.previousElementSibling.dataset.id);
     const response = await fetch("/properties", {
@@ -232,13 +234,15 @@ function addInputs() {
 }
 function revealAddPropertyForm() {
   const toggleForm = document.createElement("button");
+  toggleForm.classList.add("admin-button");
+  toggleForm.classList.add("hide");
   toggleForm.textContent = "Add New Property";
   toggleForm.addEventListener("click", function (e) {
     const addProperty = document.getElementById("propertyForm");
     if (!addProperty.classList.toggle("hide")) {
       toggleForm.textContent = "Hide New Property Form";
     } else {
-      toggleForm.textContent = "Add New Property";
+      toggleForm.textContent = "Show New Property Form";
     }
   });
   return toggleForm;
@@ -284,22 +288,15 @@ function addLogin() {
     const queryData = await response.json();
     if (queryData !== false) {
       const welcomeDiv = makeWelcomeLogin(queryData.name);
+      if (queryData.name === "admin") {
+        toggleAdminButtons();
+      }
       ACCESS_TOKEN = queryData.accessToken;
       this.classList.add("hide");
       const loginDiv = document.getElementById("login-info");
       loginDiv.append(welcomeDiv);
       formElement.reset();
     }
-
-    /* Need to do stuff here
-
-
-
-888888888888888888888888888888
-
-
-
-*/
   });
 
   div = document.createElement("div");
@@ -314,7 +311,11 @@ function makeWelcomeLogin(name) {
   // const { first_name, last_name, phone_number, email } = obj[0];
   const div = document.createElement("div");
   div.id = "login-welcome";
-  div.textContent = `Welcome ${name}!`;
+  let innerDiv = document.createElement("div");
+  innerDiv.textContent = `Welcome ${name}!`;
+  div.append(innerDiv);
+
+  innerDiv = document.createElement("div");
   const logoutBtn = document.createElement("button");
   logoutBtn.textContent = "Logout";
   logoutBtn.addEventListener("click", async function (e) {
@@ -324,12 +325,13 @@ function makeWelcomeLogin(name) {
     //const queryData = await response.json();
     if (response) {
       ACCESS_TOKEN = "";
+      toggleAdminButtons();
       const loginForm = document.getElementById("login-form");
       loginForm.classList.remove("hide");
       div.remove();
     }
   });
-  div.append(logoutBtn);
+  innerDiv.append(logoutBtn);
 
   const refreshTokenBtn = document.createElement("button");
   refreshTokenBtn.textContent = "Refresh Token";
@@ -338,11 +340,10 @@ function makeWelcomeLogin(name) {
       METHOD: "GET",
     });
     const queryData = await response.json();
-    console.log(queryData);
     ACCESS_TOKEN = queryData;
   });
-  div.append(refreshTokenBtn);
-
+  innerDiv.append(refreshTokenBtn);
+  div.append(innerDiv);
   return div;
 }
 function addPropertyForm() {
@@ -453,12 +454,18 @@ addProperty.addEventListener("submit", async function (e) {
     propertyPage.append(newestPropertyPanel);
     this.reset();
   } else {
-    console.log("failed to make property");
   }
 });
 addProperty.addEventListener("reset", async function (e) {
   this.reset();
 });
+
+function toggleAdminButtons() {
+  const deleteButtons = document.getElementsByClassName("admin-button");
+  for (let elem of deleteButtons) {
+    elem.classList.toggle("hide");
+  }
+}
 aboutMe();
 makePropertiesPage();
 makeContactPage();
