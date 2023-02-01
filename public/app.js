@@ -1,4 +1,5 @@
 let contentBody = document.querySelector(".content");
+let ACCESS_TOKEN;
 function aboutMe() {
   // contentBody.replaceChildren();
   const div = document.createElement("div");
@@ -60,12 +61,14 @@ function makePropertyPanel(obj) {
   firstImage.id = "cover-photo";
   innerDiv.append(firstImage);
   const innerInnerDiv = document.createElement("div");
+  innerInnerDiv.className = "property-info";
   innerInnerDiv.innerHTML = `${name} $${price}<br> ${description}<br> ${street}, ${city}, ${state}, ${zip}`;
   innerInnerDiv.setAttribute("data-price", `${price}`);
   innerInnerDiv.setAttribute("data-id", `${property_id}`);
   innerDiv.append(innerInnerDiv);
   const deleteBtn = document.createElement("button");
   deleteBtn.textContent = "Delete this property";
+  deleteBtn.classList.add("delete-button");
   deleteBtn.addEventListener("click", async function (e) {
     // console.log(this.previousElementSibling.dataset.id);
     const response = await fetch("/properties", {
@@ -75,12 +78,14 @@ function makePropertyPanel(obj) {
       }),
       headers: {
         "Content-Type": "application/json",
+        authorization: `Bearer ${ACCESS_TOKEN}`,
       },
     });
     const queryData = await response.json();
     //Need to feed back deletion of panel
-    // console.log(queryData);
-    this.parentElement.remove();
+    if (queryData) {
+      this.parentElement.remove();
+    }
   });
   innerDiv.append(deleteBtn);
   return innerDiv;
@@ -187,9 +192,10 @@ function hideContent() {
 
 function hidePropertiesUnder(price) {
   if (price === "") price = 9999999;
-  const temp = document.getElementById("propertyPage");
-  for (let elem of temp.children) {
-    if (parseInt(elem.dataset.price) > price) {
+  const propertyPanels = document.getElementsByClassName("property-panel");
+  for (let elem of propertyPanels) {
+    // console.log(elem.children[1].dataset.price);
+    if (parseInt(elem.children[1].dataset.price) > price) {
       elem.classList.add("hide");
     } else {
       elem.classList.remove("hide");
@@ -239,8 +245,8 @@ function revealAddPropertyForm() {
 }
 function addLogin() {
   const formElement = document.createElement("form");
-  formElement.action = "/";
-  formElement.method = "GET";
+  // formElement.action = "/";
+  // formElement.method = "GET";
   formElement.id = "login-form";
   let div = document.createElement("div");
   const userLabel = document.createElement("label");
@@ -263,20 +269,28 @@ function addLogin() {
   const submitBtn = document.createElement("button");
   submitBtn.type = "submit";
   submitBtn.textContent = "Submit";
-  submitBtn.addEventListener("click", async function (e) {
+  formElement.addEventListener("submit", async function (e) {
     e.preventDefault();
-    const response = await fetch("/property-manager", {
+    const response = await fetch("/login", {
       method: "POST",
       body: JSON.stringify({
-        username: inputUserName.value,
-        password: inputPassword.value,
+        username: e.target[0].value,
+        password: e.target[1].value,
       }),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
     const queryData = await response.json();
-    const welcomeDiv = makeWelcomeLogin(queryData[0]);
-    this.parentElement.classList.add("hide");
-    const loginDiv = document.getElementById("login-info");
-    loginDiv.append(welcomeDiv);
+    if (queryData !== false) {
+      const welcomeDiv = makeWelcomeLogin(queryData.name);
+      ACCESS_TOKEN = queryData.accessToken;
+      this.classList.add("hide");
+      const loginDiv = document.getElementById("login-info");
+      loginDiv.append(welcomeDiv);
+      formElement.reset();
+    }
+
     /* Need to do stuff here
 
 
@@ -296,19 +310,39 @@ function addLogin() {
   return formElement;
 }
 
-function makeWelcomeLogin(obj) {
-  const { first_name, last_name, phone_number, email } = obj;
+function makeWelcomeLogin(name) {
+  // const { first_name, last_name, phone_number, email } = obj[0];
   const div = document.createElement("div");
   div.id = "login-welcome";
-  div.textContent = `Welcome ${first_name} ${last_name}!`;
+  div.textContent = `Welcome ${name}!`;
   const logoutBtn = document.createElement("button");
   logoutBtn.textContent = "Logout";
-  logoutBtn.addEventListener("click", function (e) {
-    const loginForm = document.getElementById("login-form");
-    loginForm.classList.remove("hide");
-    div.remove();
+  logoutBtn.addEventListener("click", async function (e) {
+    const response = await fetch("/logout", {
+      method: "DELETE",
+    });
+    //const queryData = await response.json();
+    if (response) {
+      ACCESS_TOKEN = "";
+      const loginForm = document.getElementById("login-form");
+      loginForm.classList.remove("hide");
+      div.remove();
+    }
   });
   div.append(logoutBtn);
+
+  const refreshTokenBtn = document.createElement("button");
+  refreshTokenBtn.textContent = "Refresh Token";
+  refreshTokenBtn.addEventListener("click", async function (e) {
+    const response = await fetch("/refresh_token", {
+      METHOD: "GET",
+    });
+    const queryData = await response.json();
+    console.log(queryData);
+    ACCESS_TOKEN = queryData;
+  });
+  div.append(refreshTokenBtn);
+
   return div;
 }
 function addPropertyForm() {
@@ -409,13 +443,18 @@ addProperty.addEventListener("submit", async function (e) {
     body: JSON.stringify(data),
     headers: {
       "Content-Type": "application/json",
+      authorization: `Bearer ${ACCESS_TOKEN}`,
     },
   });
   const queryData = await response.json();
-  const newestPropertyPanel = makePropertyPanel(queryData[0]);
-  const propertyPage = document.getElementById("propertyPage");
-  propertyPage.append(newestPropertyPanel);
-  this.reset();
+  if (queryData !== false) {
+    const newestPropertyPanel = makePropertyPanel(queryData[0]);
+    const propertyPage = document.getElementById("propertyPage");
+    propertyPage.append(newestPropertyPanel);
+    this.reset();
+  } else {
+    console.log("failed to make property");
+  }
 });
 addProperty.addEventListener("reset", async function (e) {
   this.reset();

@@ -17,33 +17,32 @@ A and C #FFC48D yellowgold
   box-sizing: border-box;
   font-family: Cinezel;
 }
-html,
-body {
-  min-height: 100%;
-  /* height: 100vh;
-  position: relative; */
-}
 body {
   /* background-color: #bd9d9b; */
   /* position: relative; */
   background: linear-gradient(180deg, #ffeeee 40%, #bd9d9b);
-  /* height: 100%; */
+  /* min-height: 100vh;
+  max-width: 100vw; */
   color: #423120;
+  font-family: Cinezel;
   font-size: 18px;
+  width: 100%;
+  min-height: 100vh;
 }
 .content {
   display: flex;
-  /* grid-template-columns: 1fr 1fr; */
 }
 #logo {
-  height: 100%;
+  width: 100%;
+  max-height: 100%;
 }
-
+header {
+  width: 100%;
+}
 .top {
-  font-family: Cinezel;
   display: flex;
-  font-size: 18px;
-  height: 200px;
+
+  min-height: 200px;
 }
 
 .company-info {
@@ -52,42 +51,43 @@ body {
   background-color: #562449;
 }
 #login-info {
-  height: 100%;
-  width: 100%;
   display: flex;
+  flex-grow: 1;
   background-color: #562449;
   align-items: center;
   color: #ffc48d;
   justify-content: center;
+  align-items: center;
 }
-
+/*------------------------------NAV BAR------------------------*/
 .nav-list {
+  width: 100%;
   display: flex;
+  flex-shrink: 0;
   justify-content: space-around;
   background-color: #8a332c;
   color: #ffc48d;
   font-size: 18px;
-  /* border: 1px solid red; */
   list-style: none;
   padding: 0;
   margin: 0;
 }
 /* a::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  z-index: 1;
-  box-shadow: 0 0.5rem 1rem -0.25em rgb(255, 196, 140, 0.3);
-  transition: opacity 1s ease;
-} */
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    z-index: 1;
+    box-shadow: 0 0.5rem 1rem -0.25em rgb(255, 196, 140, 0.3);
+    transition: opacity 1s ease;
+  } */
 /* a:hover::after {
-  z-index: 2;
-  opacity: 1;
-} */
+    z-index: 2;
+    opacity: 1;
+  } */
 /* a:hover {
-    color: aqua;
-} */
+      color: aqua;
+  } */
 .nav-list a:hover {
   /* transform: translateY(-20em) scale(1.02); */
   color: white;
@@ -104,14 +104,6 @@ body {
   /* transform: transform 1s ease; */
 }
 
-/* #login-info div {
-  padding: 0.3em 0;
-} */
-form {
-  /* border: 1px solid red; */
-  /* margin: 0 auto; */
-  /* text-align: center; */
-}
 #login-info form {
   text-align: center;
 }
@@ -138,10 +130,6 @@ button:hover {
   color: white;
 }
 
-/* #property-panel-filter button {
-  height: 30px;
-  margin: 0 0.3em;
-} */
 /* -------------------About Me Page--------------*/
 #about-me {
   width: 50%;
@@ -181,6 +169,7 @@ button:hover {
 .property-panel div {
   padding: 0 1em;
 }
+
 .hide {
   display: none !important;
 }
@@ -205,14 +194,10 @@ button:hover {
 i {
   margin: 0 0.5em;
 }
-/* #brand-links i {
-  width: 200px;
-  height: 500px;
-} */
+
 #brand-links a img {
   width: 50px;
   margin: 0em 1em;
-  /* height: 200px; */
 }
 #property-manager-page div:first-child {
   /* border: 1px solid black; */

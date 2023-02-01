@@ -1,14 +1,17 @@
 import express from "express";
 import postgres from "postgres";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+// import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 dotenv.config();
 const app = express();
 app.use(express.json());
 const PORT = process.env.PORT || 8080;
 const sql = postgres(process.env.DATABASE_URL);
 app.use(express.static("public"));
-app.use(express.static("../images"));
-// app.use(express.json());
+app.use(cookieParser());
+// app.use(express.static("../images"));
 
 app.get("/properties", async (req, res) => {
   const response =
@@ -22,28 +25,124 @@ app.get("/property-manager", async (req, res) => {
   const response = await sql`SELECT * FROM property_managers`;
   res.send(response);
 });
+//create login
 app.post("/property-manager", async (req, res) => {
-  const response = await sql`SELECT * FROM property_managers`;
-  // const hashedPassword = await bcrypt.hash(req.body.password,10);
-  res.send(response);
+  try {
+    const { username, password } = req.body;
+    // const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    // const response = await sql`INSERT INTO property_managers(password) VALUES(${hashedPassword}) RETURNING *`;
+    // res.json({users:response.rows[0]});
+    res.send("success");
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-app.post("/properties", async (req, res) => {
-  const { name, description, price, street, city, state, zip } = req.body;
-  // const response =
-  await sql`INSERT INTO properties(name, description, price, street, city, state, zip, manager_id)
-  VALUES(${name},${description},${price},${street},${city}, ${state}, ${zip}, 1) RETURNING *`;
-  const response =
-    await sql`SELECT * FROM properties INNER JOIN property_managers ON properties.manager_id = property_managers.manager_id WHERE properties.property_id = (SELECT MAX(property_id) FROM properties)`;
-  res.send(response);
+app.post("/properties", authenticateToken, async (req, res) => {
+  try {
+    const { name, description, price, street, city, state, zip } = req.body;
+    // const response =
+    await sql`INSERT INTO properties(name, description, price, street, city, state, zip, manager_id)
+    VALUES(${name},${description},${price},${street},${city}, ${state}, ${zip}, 1) RETURNING *`;
+    const response =
+      await sql`SELECT * FROM properties INNER JOIN property_managers ON properties.manager_id = property_managers.manager_id WHERE properties.property_id = (SELECT MAX(property_id) FROM properties)`;
+    res.send(response);
+  } catch (error) {
+    res.status(500).send(false);
+  }
 });
 
-app.delete("/properties", async (req, res) => {
+app.delete("/properties", authenticateToken, async (req, res) => {
   const id = req.body.property_id;
   try {
     await sql`DELETE FROM properties WHERE property_id = ${id}`;
-    res.send({ message: "success" });
-  } catch {}
+    res.send(true);
+  } catch {
+    res.status(401).send(false);
+  }
 });
 
+//auth login
+app.post("/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const response =
+      await sql`SELECT * FROM property_managers WHERE username = ${username}`;
+    if (response.length === 0) return res.status(401).send(false);
+    //password check
+    // const validPassword = await bcrypt.compare(password, response.password);
+    // if (!validPassword) {
+    //   return res.status(401).json({ error: "Incorrect password" });
+    // }
+    //then JWT
+    let tokens = jwtTokens(response[0]);
+    res.cookie("refresh_token", tokens.refreshToken, {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    });
+    res.json({ name: username, accessToken: tokens.accessToken });
+  } catch (err) {
+    res.status(401).json({ error: err.message });
+  }
+});
+
+app.get("/refresh_token", (req, res) => {
+  try {
+    const refreshToken = req.cookies.refresh_token;
+    if (refreshToken === null) {
+      return res.status(401).json({ error: "null refresh token" });
+    }
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      (error, user) => {
+        if (error) {
+          return res.status(403).json({ error: error.message });
+        }
+        let tokens = jwtTokens(user);
+        res.cookie("refresh_token", tokens.refreshToken, {
+          httpOnly: true,
+          sameSite: "none",
+          secure: true,
+        });
+        res.json(tokens.accessToken);
+      }
+    );
+  } catch (error) {
+    res.status(401).json({ error: error.message });
+  }
+});
+
+app.delete("/logout", (req, res) => {
+  try {
+    res.clearCookie("refresh_token");
+    res.status(204).send(true);
+  } catch (error) {
+    res.status(401).send(false);
+  }
+});
+function jwtTokens({ username, email }) {
+  const user = { username, email };
+  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "10s",
+  });
+  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+  return { accessToken, refreshToken };
+}
+function authenticateToken(req, res, next) {
+  // console.log(req.headers["authorization"]);
+  const authHeader = req.headers["authorization"]; //Bearer TOKEN
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token == null) {
+    return res.status(401).send(false);
+  }
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, user) => {
+    if (error) {
+      return res.status(403).send(false);
+    }
+    req.user = user;
+    next();
+  });
+}
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
