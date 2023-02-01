@@ -242,7 +242,6 @@ function revealAddPropertyForm() {
     if (!addProperty.classList.toggle("hide")) {
       toggleForm.textContent = "Hide New Property Form";
     } else {
-      toggleForm.textContent = "Show New Property Form";
     }
   });
   return toggleForm;
