@@ -1,7 +1,6 @@
 let contentBody = document.querySelector(".content");
 let ACCESS_TOKEN;
 function aboutMe() {
-  // contentBody.replaceChildren();
   const div = document.createElement("div");
   div.id = "about-me";
 
@@ -16,13 +15,10 @@ function aboutMe() {
   <i class="fa-solid fa-baby"></i>Rockfordian since 2000 (lifelong) <br>
   <i class="fa-solid fa-wrench"></i>Prior Career: Radar Technician in the Marine Corps <br>
   <i class="fa-solid fa-id-card-clip"></i>Illinois Real Estate License since 2022`;
-  // div.classList.add("hide");
   div.append(innerDiv);
   contentBody.append(div);
 }
 async function makePropertiesPage() {
-  // contentBody.replaceChildren();
-  // addInputs();
   const response = await fetch("/properties");
   const data = await response.json();
   const div = document.createElement("div");
@@ -66,17 +62,45 @@ function makePropertyPanel(obj) {
   innerInnerDiv.setAttribute("data-price", `${price}`);
   innerInnerDiv.setAttribute("data-id", `${property_id}`);
   innerDiv.append(innerInnerDiv);
+
+  const updateBtn = document.createElement("button");
+  updateBtn.textContent = "Edit this Property";
+  updateBtn.classList.add("update-button");
+  updateBtn.classList.add("admin-button");
+  updateBtn.classList.add("hide");
+  updateBtn.addEventListener("click", async function (e) {
+    console.log("inupdatebtn");
+    const property_id = e.target.previousElementSibling.dataset.id;
+    const response = await fetch(`/properties/${property_id}`);
+    const queryData = await response.json();
+    console.log(queryData);
+    const { name, description, street, price, city, state, zip } = queryData[0];
+    const propertyFormElem = document.getElementById("propertyForm");
+    const inputHTMLCollection = propertyFormElem.getElementsByTagName("input");
+    inputHTMLCollection[0].value = name;
+    propertyFormElem.getElementsByTagName("textarea")[0].value = description;
+    inputHTMLCollection[1].value = price;
+    inputHTMLCollection[2].value = street;
+    inputHTMLCollection[3].value = city;
+    inputHTMLCollection[4].value = state;
+    inputHTMLCollection[5].value = zip;
+    propertyFormElem.dataset.id = property_id;
+  });
+  innerDiv.append(updateBtn);
+
   const deleteBtn = document.createElement("button");
   deleteBtn.textContent = "Delete this property";
   deleteBtn.classList.add("delete-button");
   deleteBtn.classList.add("admin-button");
-  deleteBtn.classList.add("hide");
+  if (true)
+    //////////////////////////////////////////////////////////////////////////////////////
+    deleteBtn.classList.add("hide");
   deleteBtn.addEventListener("click", async function (e) {
-    // console.log(this.previousElementSibling.dataset.id);
     const response = await fetch("/properties", {
       method: "DELETE",
       body: JSON.stringify({
-        property_id: this.previousElementSibling.dataset.id,
+        property_id:
+          this.previousElementSibling.previousElementSibling.dataset.id,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -223,7 +247,6 @@ function addInputs() {
   div.append(priceBtn);
   formElement.append(div);
   formElement.classList.add("hide");
-  // contentBody.prepend(formElement);
   formElement.addEventListener("submit", (e) => {
     e.preventDefault();
     hidePropertiesUnder(e.target[0].value);
@@ -293,7 +316,6 @@ function addLogin() {
       const welcomeDiv = makeWelcomeLogin(queryData.name);
       if (queryData.name === "admin") {
         toggleAdminButtons();
-        ///////////////////////////////////////////////////////////////////////////////////////
       }
       ACCESS_TOKEN = queryData.accessToken;
       this.classList.add("hide");
@@ -312,7 +334,6 @@ function addLogin() {
 }
 
 function makeWelcomeLogin(name) {
-  // const { first_name, last_name, phone_number, email } = obj[0];
   const div = document.createElement("div");
   div.id = "login-welcome";
   let innerDiv = document.createElement("div");
@@ -326,7 +347,6 @@ function makeWelcomeLogin(name) {
     const response = await fetch("/logout", {
       method: "DELETE",
     });
-    //const queryData = await response.json();
     if (response) {
       ACCESS_TOKEN = "";
       toggleAdminButtons();
@@ -357,9 +377,7 @@ function makeWelcomeLogin(name) {
 function addPropertyForm() {
   const formElement = document.createElement("form");
   formElement.id = "propertyForm";
-  // formElement.action = "/";
-  // formElement.method = "POST";
-  // const firstCol = document.createElement("div");
+  formElement.dataset.id = "";
   const nameLabel = document.createElement("label");
   nameLabel.textContent = "Name";
   const nameInput = document.createElement("input");
@@ -367,7 +385,6 @@ function addPropertyForm() {
   nameInput.required = true;
   nameInput.placeholder = "Required";
 
-  // const secondCol = document.createElement("div");
   const descriptionLabel = document.createElement("label");
   descriptionLabel.textContent = "Description";
   const descriptionInput = document.createElement("textarea");
@@ -447,24 +464,64 @@ addProperty.addEventListener("submit", async function (e) {
     state: e.target[5].value,
     zip: e.target[6].value,
   };
-  const response = await fetch("/properties", {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-      authorization: `Bearer ${ACCESS_TOKEN}`,
-    },
-  });
-  const queryData = await response.json();
-  if (queryData !== false) {
-    const newestPropertyPanel = makePropertyPanel(queryData[0]);
-    newestPropertyPanel
-      .getElementsByTagName("button")[0]
-      .classList.remove("hide");
-    const propertyPage = document.getElementById("propertyPage");
-    propertyPage.append(newestPropertyPanel);
-    this.reset();
+  if (e.target.dataset.id === "") {
+    const response = await fetch("/properties", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${ACCESS_TOKEN}`,
+      },
+    });
+    const queryData = await response.json();
+    if (queryData !== false) {
+      const newestPropertyPanel = makePropertyPanel(queryData[0]);
+      //removes edit and delete hides
+      newestPropertyPanel
+        .getElementsByTagName("button")[0]
+        .classList.remove("hide");
+      newestPropertyPanel
+        .getElementsByTagName("button")[1]
+        .classList.remove("hide");
+      const propertyPage = document.getElementById("propertyPage");
+      propertyPage.append(newestPropertyPanel);
+      this.reset();
+    } else {
+      //failed to make new property
+    }
   } else {
+    //update property
+    data.property_id = parseInt(e.target.dataset.id);
+    const response = await fetch("/properties", {
+      method: "PATCH",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${ACCESS_TOKEN}`,
+      },
+    });
+    const queryData = await response.json();
+    if (queryData !== false) {
+      const {
+        property_id,
+        name,
+        description,
+        street,
+        city,
+        state,
+        zip,
+        price,
+        img_path,
+        img_ext,
+      } = queryData[0];
+      const propertyPanel = document.querySelector(
+        `[data-id="${e.target.dataset.id}"]`
+      );
+      propertyPanel.innerHTML = `${name} $${price}<br> ${description}<br> ${street}, ${city}, ${state}, ${zip}`;
+      e.target.dataset.id = "";
+      this.reset();
+    } else {
+    }
   }
 });
 addProperty.addEventListener("reset", async function (e) {
@@ -472,7 +529,6 @@ addProperty.addEventListener("reset", async function (e) {
 });
 
 function toggleAdminButtons() {
-  // togglePropertyForm();
   const deleteButtons = document.getElementsByClassName("admin-button");
   for (let elem of deleteButtons) {
     elem.classList.toggle("hide");
@@ -481,8 +537,3 @@ function toggleAdminButtons() {
 aboutMe();
 makePropertiesPage();
 makeContactPage();
-
-//https://www.bhhscrosby.com/agent-bio/emmabowyer
-//https://www.facebook.com/BowyerPropertyManager
-
-//https://www.linkedin.com/in/emmabowyer/?fbclid=IwAR2ZvzLFu5YlYko-R-yYKrFGxYxRNj_SyUz9KGQnkr9Wpggh_vWgk4Elg0Y

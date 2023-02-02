@@ -11,21 +11,22 @@ const PORT = process.env.PORT || 8080;
 const sql = postgres(process.env.DATABASE_URL);
 app.use(express.static("public"));
 app.use(cookieParser());
-// app.use(express.static("../images"));
 
 app.get("/properties", async (req, res) => {
   const response =
     await sql`SELECT * FROM properties INNER JOIN property_managers ON properties.manager_id = property_managers.manager_id`;
   res.send(response);
-  // sql`SELECT * FROM properties`.then((data) => {
-  //     res.json(data);
-  // });
 });
+app.get("/properties/:id", async (req, res) => {
+  const response =
+    await sql`SELECT * FROM properties WHERE property_id = ${req.params.id}`;
+  res.send(response);
+});
+
 app.get("/property-manager", async (req, res) => {
   const response = await sql`SELECT * FROM property_managers`;
   res.send(response);
 });
-//create login
 app.post("/property-manager", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -52,9 +53,31 @@ app.post("/properties", authenticateToken, async (req, res) => {
   }
 });
 
+app.patch("/properties", authenticateToken, async (req, res) => {
+  try {
+    const { property_id, name, description, price, street, city, state, zip } =
+      req.body;
+    const response = await sql`UPDATE properties SET name = ${name},
+    description = ${description},
+    price = ${price},
+    street = ${street},
+    city = ${city},
+    state = ${state},
+    zip = ${zip}
+    WHERE property_id = ${property_id} RETURNING *`;
+    console.log(response);
+    // const response =
+    //   await sql`SELECT * FROM properties INNER JOIN property_managers ON properties.manager_id = property_managers.manager_id WHERE properties.property_id = (SELECT MAX(property_id) FROM properties)`;
+    res.send(response);
+  } catch (error) {
+    //   res.status(500).send(false);
+  }
+});
+
 app.delete("/properties", authenticateToken, async (req, res) => {
   const id = req.body.property_id;
   try {
+    console.log(id);
     await sql`DELETE FROM properties WHERE property_id = ${id}`;
     res.send(true);
   } catch {
