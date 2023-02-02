@@ -293,6 +293,7 @@ function addLogin() {
       const welcomeDiv = makeWelcomeLogin(queryData.name);
       if (queryData.name === "admin") {
         toggleAdminButtons();
+        ///////////////////////////////////////////////////////////////////////////////////////
       }
       ACCESS_TOKEN = queryData.accessToken;
       this.classList.add("hide");
@@ -329,6 +330,10 @@ function makeWelcomeLogin(name) {
     if (response) {
       ACCESS_TOKEN = "";
       toggleAdminButtons();
+      const toggleButton = document.getElementById("toggle-form");
+      if ((toggleButton.textContent = "Hide New Property Form")) {
+        togglePropertyForm();
+      }
       const loginForm = document.getElementById("login-form");
       loginForm.classList.remove("hide");
       div.remove();
