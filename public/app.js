@@ -246,7 +246,7 @@ function revealAddPropertyForm() {
   toggleForm.id = "toggle-form";
   toggleForm.classList.add("admin-button");
   toggleForm.classList.add("hide");
-  toggleForm.textContent = "Add New Property";
+  toggleForm.textContent = "Show New Property Form";
   toggleForm.addEventListener("click", togglePropertyForm);
   return toggleForm;
 }
@@ -467,11 +467,11 @@ addProperty.addEventListener("reset", async function (e) {
 });
 
 function toggleAdminButtons() {
+  // togglePropertyForm();
   const deleteButtons = document.getElementsByClassName("admin-button");
   for (let elem of deleteButtons) {
     elem.classList.toggle("hide");
   }
-  revealAddPropertyForm();
 }
 aboutMe();
 makePropertiesPage();

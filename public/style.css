@@ -33,16 +33,16 @@ body {
   display: flex;
 }
 #logo {
-  width: 100%;
-  max-height: 100%;
+  min-width: 500px;
+  min-height: 250px;
 }
 header {
   width: 100%;
 }
 .top {
   display: flex;
-
   min-height: 200px;
+  overflow: hidden;
 }
 
 .company-info {
