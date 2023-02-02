@@ -28,6 +28,7 @@ body {
   font-size: 18px;
   width: 100%;
   min-height: 100vh;
+  min-width: 900px;
 }
 .content {
   display: flex;
@@ -142,29 +143,47 @@ button:hover {
   margin: 0 1em;
 }
 /* --------------------Property Page---------------*/
+.property-info {
+  /* min-width: 500px; */
+}
 .property-panel {
   display: flex;
   margin: 2em 3em;
   font-weight: 600;
+  min-width: 750px;
+  align-items: center;
+  /* max-height: 300px; */
 }
 #property-panel-filter > * {
   height: 30px;
   margin: 0 0.3em;
 }
+.property-panel button {
+  height: 100px;
+  margin: 0 0.5rem;
+}
 #propertyForm {
-  width: 25%;
+  width: 100vw;
   border: 1px solid black;
   display: grid;
   grid-template-columns: 1fr 1fr;
   margin: 1em;
   padding-top: 1em;
   padding-right: 1em;
+  overflow: auto;
 }
 #propertyForm > * {
   padding: 2em;
 }
+#propertyForm button {
+  margin: 0;
+  padding: 0;
+  height: 50px;
+}
 #cover-photo {
-  width: 200px;
+  width: 250px;
+  object-fit: contain;
+  object-position: center;
 }
 .property-panel div {
   padding: 0 1em;
