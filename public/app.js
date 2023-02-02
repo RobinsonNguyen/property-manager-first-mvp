@@ -92,9 +92,7 @@ function makePropertyPanel(obj) {
   deleteBtn.textContent = "Delete this property";
   deleteBtn.classList.add("delete-button");
   deleteBtn.classList.add("admin-button");
-  if (true)
-    //////////////////////////////////////////////////////////////////////////////////////
-    deleteBtn.classList.add("hide");
+  if (true) deleteBtn.classList.add("hide");
   deleteBtn.addEventListener("click", async function (e) {
     const response = await fetch("/properties", {
       method: "DELETE",
@@ -351,7 +349,7 @@ function makeWelcomeLogin(name) {
       ACCESS_TOKEN = "";
       toggleAdminButtons();
       const toggleButton = document.getElementById("toggle-form");
-      if ((toggleButton.textContent = "Hide New Property Form")) {
+      if (toggleButton.textContent === "Hide New Property Form") {
         togglePropertyForm();
       }
       const loginForm = document.getElementById("login-form");
