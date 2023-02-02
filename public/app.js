@@ -106,7 +106,6 @@ function makePropertyPanel(obj) {
       },
     });
     const queryData = await response.json();
-    //Need to feed back deletion of panel
     if (queryData) {
       this.parentElement.remove();
     }
@@ -116,7 +115,6 @@ function makePropertyPanel(obj) {
 }
 
 async function makeContactPage() {
-  // contentBody.replaceChildren();
   const response = await fetch("/property-manager");
   const data = await response.json();
   const div = document.createElement("div");

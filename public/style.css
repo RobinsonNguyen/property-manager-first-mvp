@@ -30,6 +30,19 @@ body {
   min-height: 100vh;
   min-width: 900px;
 }
+button {
+  border: 1px solid #ffc48d;
+  background-color: #8a332c;
+  color: #ffc48d;
+  font-weight: 900;
+}
+button:hover {
+  color: white;
+  cursor: pointer;
+}
+.content button {
+  padding: 0 1rem;
+}
 .content {
   display: flex;
 }
@@ -101,13 +114,6 @@ header {
   margin: 1em;
   font-size: 1.5em;
 }
-button {
-  background-color: #8a332c;
-  color: #ffc48d;
-}
-button:hover {
-  color: white;
-}
 
 /* -------------------About Me Page--------------*/
 #about-me {
@@ -121,16 +127,13 @@ button:hover {
   margin: 0 1em;
 }
 /* --------------------Property Page---------------*/
-.property-info {
-  /* min-width: 500px; */
-}
+
 .property-panel {
   display: flex;
   margin: 2em 3em;
   font-weight: 600;
   min-width: 750px;
   align-items: center;
-  /* max-height: 300px; */
 }
 #property-panel-filter > * {
   height: 30px;
@@ -197,7 +200,6 @@ i {
   margin: 0em 1em;
 }
 #property-manager-page div:first-child {
-  /* border: 1px solid black; */
   display: flex;
 }
 #prof-photo {
@@ -205,10 +207,18 @@ i {
   width: 175px;
 }
 
+/*---------------------login----------------*/
+
 #login-welcome div button {
-  white-space: nowrap;
-  min-width: min-content;
+  /* white-space: nowrap; */
+  /* min-width: min-content; */
+  margin: 0 0.5rem;
+  /* width: 25px; */
+  /* height:20px */
 }
 #login-welcome {
   width: 200px;
+}
+#login-welcome div:nth-child(2) {
+  display: flex;
 }

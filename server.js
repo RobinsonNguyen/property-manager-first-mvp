@@ -17,6 +17,7 @@ app.get("/properties", async (req, res) => {
     await sql`SELECT * FROM properties INNER JOIN property_managers ON properties.manager_id = property_managers.manager_id`;
   res.send(response);
 });
+
 app.get("/properties/:id", async (req, res) => {
   const response =
     await sql`SELECT * FROM properties WHERE property_id = ${req.params.id}`;
@@ -27,6 +28,7 @@ app.get("/property-manager", async (req, res) => {
   const response = await sql`SELECT * FROM property_managers`;
   res.send(response);
 });
+
 app.post("/property-manager", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -42,11 +44,9 @@ app.post("/property-manager", async (req, res) => {
 app.post("/properties", authenticateToken, async (req, res) => {
   try {
     const { name, description, price, street, city, state, zip } = req.body;
-    // const response =
-    await sql`INSERT INTO properties(name, description, price, street, city, state, zip, manager_id)
-    VALUES(${name},${description},${price},${street},${city}, ${state}, ${zip}, 1) RETURNING *`;
     const response =
-      await sql`SELECT * FROM properties INNER JOIN property_managers ON properties.manager_id = property_managers.manager_id WHERE properties.property_id = (SELECT MAX(property_id) FROM properties)`;
+      await sql`INSERT INTO properties(name, description, price, street, city, state, zip, manager_id)
+    VALUES(${name},${description},${price},${street},${city}, ${state}, ${zip}, 1) RETURNING *`;
     res.send(response);
   } catch (error) {
     res.status(500).send(false);
@@ -65,19 +65,15 @@ app.patch("/properties", authenticateToken, async (req, res) => {
     state = ${state},
     zip = ${zip}
     WHERE property_id = ${property_id} RETURNING *`;
-    console.log(response);
-    // const response =
-    //   await sql`SELECT * FROM properties INNER JOIN property_managers ON properties.manager_id = property_managers.manager_id WHERE properties.property_id = (SELECT MAX(property_id) FROM properties)`;
     res.send(response);
   } catch (error) {
-    //   res.status(500).send(false);
+    res.status(500).send(false);
   }
 });
 
 app.delete("/properties", authenticateToken, async (req, res) => {
   const id = req.body.property_id;
   try {
-    console.log(id);
     await sql`DELETE FROM properties WHERE property_id = ${id}`;
     res.send(true);
   } catch {
@@ -154,7 +150,6 @@ function jwtTokens({ username, email }) {
   return { accessToken, refreshToken };
 }
 function authenticateToken(req, res, next) {
-  // console.log(req.headers["authorization"]);
   const authHeader = req.headers["authorization"]; //Bearer TOKEN
   const token = authHeader && authHeader.split(" ")[1];
   if (token == null) {
