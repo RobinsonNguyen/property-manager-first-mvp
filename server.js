@@ -7,10 +7,10 @@ import jwt from "jsonwebtoken";
 dotenv.config();
 const app = express();
 app.use(express.json());
-const PORT = process.env.PORT || 8080;
-const sql = postgres(process.env.DATABASE_URL);
 app.use(express.static("public"));
 app.use(cookieParser());
+const PORT = process.env.PORT || 8080;
+const sql = postgres(process.env.DATABASE_URL);
 
 app.get("/properties", async (req, res) => {
   const response =
@@ -141,6 +141,7 @@ app.delete("/logout", (req, res) => {
     res.status(401).send(false);
   }
 });
+
 function jwtTokens({ username, email }) {
   const user = { username, email };
   const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {

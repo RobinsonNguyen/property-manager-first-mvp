@@ -69,11 +69,9 @@ function makePropertyPanel(obj) {
   updateBtn.classList.add("admin-button");
   updateBtn.classList.add("hide");
   updateBtn.addEventListener("click", async function (e) {
-    console.log("inupdatebtn");
     const property_id = e.target.previousElementSibling.dataset.id;
     const response = await fetch(`/properties/${property_id}`);
     const queryData = await response.json();
-    console.log(queryData);
     const { name, description, street, price, city, state, zip } = queryData[0];
     const propertyFormElem = document.getElementById("propertyForm");
     const inputHTMLCollection = propertyFormElem.getElementsByTagName("input");
@@ -177,21 +175,16 @@ function clickContact(e) {
   hideContent();
   const temp = document.getElementById("property-manager-page");
   temp.classList.remove("hide");
-  // makeContactPage();
 }
 function clickProperties(e) {
   e.preventDefault();
   hideContent();
   const temp = document.getElementById("propertyPage");
-  // const newPPage = makePropertiesPage();
 
-  // temp.replaceWith(makePropertiesPage());
   const temp2 = document.getElementById("price-range-form");
   const temp3 = document.getElementById("propertyForm");
   temp.classList.remove("hide");
   temp2.classList.remove("hide");
-  // temp3.classList.remove("hide");
-  // makePropertiesPage();
 }
 const aboutMebutton = document.querySelector(".button1");
 aboutMebutton.addEventListener("click", clickAbout, false);
@@ -200,14 +193,11 @@ function clickAbout(e) {
   hideContent();
   const temp = document.getElementById("about-me");
   temp.classList.remove("hide");
-  // aboutMe();
 }
 
 function hideContent() {
   const contentElement = document.querySelector(".content");
-  // console.log(contentElement.children);
   for (let elem of contentElement.children) {
-    // console.log(elem);
     elem.classList.add("hide");
   }
 }
@@ -216,7 +206,6 @@ function hidePropertiesUnder(price) {
   if (price === "") price = 9999999;
   const propertyPanels = document.getElementsByClassName("property-panel");
   for (let elem of propertyPanels) {
-    // console.log(elem.children[1].dataset.price);
     if (parseInt(elem.children[1].dataset.price) > price) {
       elem.classList.add("hide");
     } else {
@@ -271,8 +260,6 @@ function revealAddPropertyForm() {
 }
 function addLogin() {
   const formElement = document.createElement("form");
-  // formElement.action = "/";
-  // formElement.method = "GET";
   formElement.id = "login-form";
   let div = document.createElement("div");
   const userLabel = document.createElement("label");
@@ -281,6 +268,7 @@ function addLogin() {
   const inputUserName = document.createElement("input");
   inputUserName.name = "userName";
   inputUserName.type = "text";
+  inputUserName.setAttribute("placeholder", "admin");
 
   div.append(userLabel);
   div.append(inputUserName);
@@ -292,6 +280,7 @@ function addLogin() {
   const inputPassword = document.createElement("input");
   inputPassword.name = "password";
   inputPassword.type = "password";
+  inputPassword.setAttribute("placeholder", "meowmix");
   const submitBtn = document.createElement("button");
   submitBtn.type = "submit";
   submitBtn.textContent = "Submit";
@@ -346,14 +335,14 @@ function makeWelcomeLogin(name) {
     if (response) {
       ACCESS_TOKEN = "";
       toggleAdminButtons();
-      const toggleButton = document.getElementById("toggle-form");
-      if (toggleButton.textContent === "Hide New Property Form") {
-        togglePropertyForm();
-      }
-      const loginForm = document.getElementById("login-form");
-      loginForm.classList.remove("hide");
       div.remove();
     }
+    const toggleButton = document.getElementById("toggle-form");
+    if (toggleButton.textContent === "Hide New Property Form") {
+      togglePropertyForm();
+    }
+    const loginForm = document.getElementById("login-form");
+    loginForm.classList.remove("hide");
   });
   innerDiv.append(logoutBtn);
 

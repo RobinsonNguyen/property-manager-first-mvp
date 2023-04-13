@@ -51,7 +51,7 @@ CREATE TABLE properties(
 );
 
 INSERT INTO property_managers(first_name, last_name, phone_number, email, company,username, password)
-VALUES('Emma', 'Bowyer', '(779)302-115','emma@bhhscrosby.com','Berkshire Hathaway HomeServices Crosby Starck Real Estate','admin','meowmix');
+VALUES('Emma', 'Bowyer', '(555)555-5555','emma@bhhscrosby.com','Berkshire Hathaway HomeServices Crosby Starck Real Estate','admin','meowmix');
 
 INSERT INTO properties(name, description, street, city, state, zip, price, owner_id, manager_id,img_path,img_ext)
 VALUES('Church', 'Freshly painted 3 bedroom, 1 bathroom bungalow with hardwood floors throughout. All rooms and bathroom located on the upper floor. Has an enclosed front porch that leads into a large living room and dining room. 1.5 car detached garage and fully fenced in yard. Appliances include refrigerator, stove and dishwasher. Rent is $1, 200 a month. Tenant pays all utilities including water and is responsible for landscaping and snow removal. No smoking and no pets. Any persons over the age of 18 that will be residing in the property will need to fill out an application. Application fee is $55 which covers criminal background check, prior eviction history and credit check done through DoorLoop.',
