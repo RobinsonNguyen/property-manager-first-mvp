@@ -13,20 +13,32 @@ const PORT = process.env.PORT || 8080;
 const sql = postgres(process.env.DATABASE_URL);
 
 app.get("/properties", async (req, res) => {
-  const response =
-    await sql`SELECT * FROM properties INNER JOIN property_managers ON properties.manager_id = property_managers.manager_id`;
-  res.send(response);
+  try {
+    const response =
+      await sql`SELECT * FROM properties INNER JOIN property_managers ON properties.manager_id = property_managers.manager_id`;
+    res.send(response);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
 });
 
 app.get("/properties/:id", async (req, res) => {
-  const response =
-    await sql`SELECT * FROM properties WHERE property_id = ${req.params.id}`;
-  res.send(response);
+  try {
+    const response =
+      await sql`SELECT * FROM properties WHERE property_id = ${req.params.id}`;
+    res.send(response);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
 });
 
 app.get("/property-manager", async (req, res) => {
-  const response = await sql`SELECT * FROM property_managers`;
-  res.send(response);
+  try {
+    const response = await sql`SELECT * FROM property_managers`;
+    res.send(response);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
 });
 
 app.post("/property-manager", async (req, res) => {
